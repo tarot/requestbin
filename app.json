@@ -1,0 +1,8 @@
+{
+  "env": {
+    "REALM": "prod"
+  },
+  "addons": [
+    "heroku-redis"
+  ]
+}
