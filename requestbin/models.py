@@ -27,11 +27,11 @@ class Bin(object):
 
     def json(self):
         return json.dumps(self.to_dict())
-    
+
     def to_dict(self):
         return dict(
-            private=self.private, 
-            color=self.color, 
+            private=self.private,
+            color=self.color,
             name=self.name,
             request_count=self.request_count)
 
@@ -61,7 +61,7 @@ class Bin(object):
 
 class Request(object):
     ignore_headers = config.IGNORE_HEADERS
-    max_raw_size = config.MAX_RAW_SIZE 
+    max_raw_size = config.MAX_RAW_SIZE
 
     def __init__(self, input=None):
         if input:
@@ -83,12 +83,14 @@ class Request(object):
             self.body = input.data
             self.path = input.path
             self.content_type = self.headers.get("Content-Type", "")
+            self.scheme = input.scheme
+            self.host = input.host
 
             self.raw = input.environ.get('raw')
             self.content_length = len(self.raw)
 
             # for header in self.ignore_headers:
-            #     self.raw = re.sub(r'{}: [^\n]+\n'.format(header), 
+            #     self.raw = re.sub(r'{}: [^\n]+\n'.format(header),
             #                         '', self.raw, flags=re.IGNORECASE)
             if self.raw and len(self.raw) > self.max_raw_size:
                 self.raw = self.raw[0:self.max_raw_size]
@@ -108,6 +110,8 @@ class Request(object):
             path=self.path,
             content_length=self.content_length,
             content_type=self.content_type,
+            origin=self.scheme,
+            host=self.host,
         )
 
     @property
@@ -155,4 +159,3 @@ class Request(object):
     #         else:
     #             fields.append((k,v))
     #     return iter(sorted(fields) + sorted(files))
-
